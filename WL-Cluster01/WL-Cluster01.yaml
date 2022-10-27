@@ -2,8 +2,8 @@ apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   labels:
-    cluster.x-k8s.io/cluster-name: mgmt-cluster02
-  name: mgmt-cluster02
+    cluster.x-k8s.io/cluster-name: wl-cluster01
+  name: wl-cluster01
   namespace: default
 spec:
   clusterNetwork:
@@ -13,16 +13,16 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: KubeadmControlPlane
-    name: mgmt-cluster02
+    name: wl-cluster01
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
     kind: VSphereCluster
-    name: mgmt-cluster02
+    name: wl-cluster01
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: VSphereCluster
 metadata:
-  name: mgmt-cluster02
+  name: wl-cluster01
   namespace: default
 spec:
   controlPlaneEndpoint:
@@ -30,14 +30,14 @@ spec:
     port: 6443
   identityRef:
     kind: Secret
-    name: mgmt-cluster02
+    name: wl-cluster01
   server: 172.16.1.35
   thumbprint: B9:18:80:95:19:12:94:06:53:4B:28:B9:95:9A:CD:DC:64:5F:9D:CB
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: VSphereMachineTemplate
 metadata:
-  name: mgmt-cluster02
+  name: wl-cluster01
   namespace: default
 spec:
   template:
@@ -63,7 +63,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: VSphereMachineTemplate
 metadata:
-  name: mgmt-cluster02-worker
+  name: wl-cluster01-worker
   namespace: default
 spec:
   template:
@@ -89,7 +89,7 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: KubeadmControlPlane
 metadata:
-  name: mgmt-cluster02
+  name: wl-cluster01
   namespace: default
 spec:
   kubeadmConfigSpec:
@@ -183,14 +183,14 @@ spec:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: VSphereMachineTemplate
-      name: mgmt-cluster02
-  replicas: 3
+      name: wl-cluster01
+  replicas: 1
   version: v1.23.5
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: mgmt-cluster02-md-0
+  name: wl-cluster01-md-0
   namespace: default
 spec:
   template:
@@ -217,42 +217,42 @@ apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
   labels:
-    cluster.x-k8s.io/cluster-name: mgmt-cluster02
-  name: mgmt-cluster02-md-0
+    cluster.x-k8s.io/cluster-name: wl-cluster01
+  name: wl-cluster01-md-0
   namespace: default
 spec:
-  clusterName: mgmt-cluster02
-  replicas: 4
+  clusterName: wl-cluster01
+  replicas: 1
   selector:
     matchLabels: {}
   template:
     metadata:
       labels:
-        cluster.x-k8s.io/cluster-name: mgmt-cluster02
+        cluster.x-k8s.io/cluster-name: wl-cluster01
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
-          name: mgmt-cluster02-md-0
-      clusterName: mgmt-cluster02
+          name: wl-cluster01-md-0
+      clusterName: wl-cluster01
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: VSphereMachineTemplate
-        name: mgmt-cluster02-worker
+        name: wl-cluster01-worker
       version: v1.23.5
 ---
 apiVersion: addons.cluster.x-k8s.io/v1beta1
 kind: ClusterResourceSet
 metadata:
   labels:
-    cluster.x-k8s.io/cluster-name: mgmt-cluster02
-  name: mgmt-cluster02-crs-0
+    cluster.x-k8s.io/cluster-name: wl-cluster01
+  name: wl-cluster01-crs-0
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      cluster.x-k8s.io/cluster-name: mgmt-cluster02
+      cluster.x-k8s.io/cluster-name: wl-cluster01
   resources:
   - kind: Secret
     name: vsphere-csi-controller
@@ -278,7 +278,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: mgmt-cluster02
+  name: wl-cluster01
   namespace: default
 stringData:
   password: )arkSeal76
@@ -445,7 +445,7 @@ stringData:
     stringData:
       csi-vsphere.conf: |+
         [Global]
-        cluster-id = "default/mgmt-cluster02"
+        cluster-id = "default/wl-cluster01"
 
         [VirtualCenter "172.16.1.35"]
         user = "administrator@cloud.angle"
