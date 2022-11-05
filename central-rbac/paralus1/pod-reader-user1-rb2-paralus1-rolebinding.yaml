@@ -10,4 +10,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: user1
-  namespace: default
+  namespace: rb2
